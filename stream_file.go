@@ -431,15 +431,10 @@ func (sf *StreamFile) writeSheetEnd() error {
 
 	if len(sf.currentSheet.mergeCells) > 0 {
 		mergeCellData := "<mergeCells count=\"" + strconv.Itoa(len(sf.currentSheet.mergeCells)) + "\">"
-		if err := sf.currentSheet.write(mergeCellData); err != nil {
-			return err
-		}
 		for _, ref := range sf.currentSheet.mergeCells {
-			if err := sf.currentSheet.write("<mergeCell ref=\"" + ref + "\"/>"); err != nil {
-				return err
-			}
+			mergeCellData += "<mergeCell ref=\"" + ref + "\"/>"
 		}
-		if err := sf.currentSheet.write("</mergeCells>"); err != nil {
+		if err := sf.currentSheet.write(mergeCellData + "</mergeCells>"); err != nil {
 			return err
 		}
 	}
