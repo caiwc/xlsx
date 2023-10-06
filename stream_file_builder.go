@@ -235,16 +235,22 @@ func (sb *StreamFileBuilder) AddSheetS(name string, columnStyles []StreamStyle) 
 
 	cSS := make(map[int]StreamStyle)
 	// Set default column styles based on the cel styles in the first row
-	// Set the default column width to 11. This makes enough places for the
+	// Set the default column width to 20. This makes enough places for the
 	// default date style cells to display the dates correctly
 	for i, colStyle := range columnStyles {
 		colNum := i + 1
 		cSS[colNum] = colStyle
-		sheet.SetColWidth(colNum, colNum, 11)
+		sheet.SetColWidth(colNum, colNum, 20)
 	}
 	sheetIndex := len(sb.xlsxFile.Sheets) - 1
 	sb.sheetStreamStyles[sheetIndex] = cSS
 	return nil
+}
+
+// SetColWidth will set the width of a range of columns.
+func (sb *StreamFileBuilder) SetColWidth(sheetIndex int, min, max int, width float64) {
+	sheet := sb.xlsxFile.Sheets[sheetIndex]
+	sheet.SetColWidth(min, max, width)
 }
 
 // AddValidation will add a validation to a sheet.
