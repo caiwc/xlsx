@@ -135,9 +135,9 @@ func (sf *StreamFile) write(cells []string) error {
 	}
 	cellCount := len(cells)
 	if cellCount != sf.currentSheet.columnCount {
-		if sf.currentSheet.columnCount != 0 {
-			return WrongNumberOfRowsError
-		}
+		//if sf.currentSheet.columnCount != 0 {
+		//	return WrongNumberOfRowsError
+		//}
 		sf.currentSheet.columnCount = cellCount
 	}
 
@@ -245,9 +245,9 @@ func (sf *StreamFile) writeS(cells []StreamCell) error {
 		return NoCurrentSheetError
 	}
 	if len(cells) != sf.currentSheet.columnCount {
-		if sf.currentSheet.columnCount != 0 {
-			return WrongNumberOfRowsError
-		}
+		//if sf.currentSheet.columnCount != 0 {
+		//	return WrongNumberOfRowsError
+		//}
 		sf.currentSheet.columnCount = len(cells)
 	}
 
