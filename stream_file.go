@@ -135,9 +135,6 @@ func (sf *StreamFile) write(cells []string) error {
 	}
 	cellCount := len(cells)
 	if cellCount != sf.currentSheet.columnCount {
-		//if sf.currentSheet.columnCount != 0 {
-		//	return WrongNumberOfRowsError
-		//}
 		sf.currentSheet.columnCount = cellCount
 	}
 
@@ -296,10 +293,10 @@ func (sf *StreamFile) getXlsxCell(cell StreamCell, colIndex int) (xlsxC, error) 
 		}
 	}
 
-	return makeXlsxCell(cell.cellType, cellCoordinate, cellStyleId, cell.cellData)
+	return makeXlsxCell(cell.cellType, cellCoordinate, cellStyleId, cell.cellData, cell.formula)
 }
 
-func makeXlsxCell(cellType CellType, cellCoordinate string, cellStyleId int, cellData string) (xlsxC, error) {
+func makeXlsxCell(cellType CellType, cellCoordinate string, cellStyleId int, cellData string, formula string) (xlsxC, error) {
 	// documentation for the c.t (cell.Type) attribute:
 	// b (Boolean): Cell containing a boolean.
 	// d (Date): Cell contains a date in the ISO 8601 format.
@@ -309,6 +306,10 @@ func makeXlsxCell(cellType CellType, cellCoordinate string, cellStyleId int, cel
 	// n (Number): Cell containing a number.
 	// s (Shared String): Cell containing a shared string.
 	// str (String): Cell containing a formula string.
+	var f *xlsxF
+	if formula != "" {
+		f = &xlsxF{Content: formula}
+	}
 	switch cellType {
 	case CellTypeBool:
 		return xlsxC{XMLName: xml.Name{Local: "c"}, R: cellCoordinate, S: cellStyleId, T: "b", V: cellData}, nil
@@ -320,7 +321,7 @@ func makeXlsxCell(cellType CellType, cellCoordinate string, cellStyleId int, cel
 	case CellTypeInline:
 		return xlsxC{XMLName: xml.Name{Local: "c"}, R: cellCoordinate, S: cellStyleId, T: "inlineStr", Is: &xlsxSI{T: cellData}}, nil
 	case CellTypeNumeric:
-		return xlsxC{XMLName: xml.Name{Local: "c"}, R: cellCoordinate, S: cellStyleId, T: "n", V: cellData}, nil
+		return xlsxC{XMLName: xml.Name{Local: "c"}, R: cellCoordinate, S: cellStyleId, T: "n", V: cellData, F: f}, nil
 	case CellTypeString:
 		// TODO Currently shared strings are types as inline strings
 		return xlsxC{XMLName: xml.Name{Local: "c"}, R: cellCoordinate, S: cellStyleId, T: "inlineStr", Is: &xlsxSI{T: cellData}}, nil

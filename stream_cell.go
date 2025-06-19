@@ -10,6 +10,7 @@ type StreamCell struct {
 	cellData  string
 	cellStyle StreamStyle
 	cellType  CellType
+	formula   string
 }
 
 // NewStreamCell creates a new cell containing the given data with the given style and type.
@@ -48,4 +49,10 @@ func NewStyledIntegerStreamCell(cellData int, cellStyle StreamStyle) StreamCell 
 func NewDateStreamCell(t time.Time) StreamCell {
 	excelTime := TimeToExcelTime(t, false)
 	return NewStreamCell(strconv.Itoa(int(excelTime)), StreamStyleDefaultDate, CellTypeNumeric)
+}
+
+func NewFormulaCell(formula string, cellStyle StreamStyle) StreamCell {
+	cell := NewStreamCell("", cellStyle, CellTypeNumeric)
+	cell.formula = formula
+	return cell
 }
